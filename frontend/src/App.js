@@ -1,17 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import RecipesPage from './pages/RecipePage';
+import RegisterPage from './pages/RegisterPage'; // Assume you already have this component
 
 function App() {
   return (
     <Router>
-      <nav>
-        <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-      </nav>
       <Routes>
-        <Route path="/" element={<RecipesPage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
