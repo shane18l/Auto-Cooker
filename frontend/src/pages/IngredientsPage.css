@@ -1,0 +1,32 @@
+.ingredients-container {
+    padding: 80px 20px 20px; /* offset for navbar */
+    text-align: center;
+    background: #f7f7f7;
+    min-height: 100vh;
+  }
+  
+  .ingredients-form {
+    margin-top: 20px;
+  }
+  
+  .ingredients-form input {
+    padding: 10px;
+    width: 300px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .ingredients-form button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #6cb4ee;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .ingredients-form button:hover {
+    background-color: #529edb;
+  }

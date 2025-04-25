@@ -1,0 +1,41 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    color: white;
+  }
+  
+  .navbar-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50%; /* optional: prevents title from taking too much space */
+  }
+  
+  .navbar-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* tighter spacing between links */
+    justify-content: flex-end;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 1px solid white;
+    border-radius: 5px;
+    white-space: nowrap;
+  }

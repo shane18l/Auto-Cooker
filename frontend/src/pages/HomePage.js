@@ -1,61 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './HomePage.css'; // Import the CSS file
+import Navbar from './Navbar'
 
 function HomePage() {
   return (
-    <div style={styles.background}>
-      <nav style={styles.navbar}>
-        <h2 style={styles.logo}>Recipe Recommender</h2>
-        <div>
-          <Link to="/login" style={styles.navButton}>Login</Link>
-          <Link to="/register" style={styles.navButton}>Register</Link>
+    <>
+        <div className="home-container">
+            <Navbar />
+            <div className="content">
+                <h1>Welcome to Recipe Recommender</h1>
+                <p>Let us help you decide what to cook based on your ingredients!</p>
+            </div>
         </div>
-      </nav>
-      <div style={styles.content}>
-        <h1>Welcome to Recipe Recommender</h1>
-        <p>Let us help you decide what to cook based on your ingredients!</p>
-      </div>
-    </div>
-  );
-}
+        
+        <div className="info-section">
+            <section>
+                <h2>How It Works</h2>
+                <p>Tell us what's in your fridge. We'll do the rest.</p>
+            </section>
+            <section>
+                <h2>Featured Recipes</h2>
+                <p>Popular picks from this week.</p>
+                <img src="https://source.unsplash.com/600x300/?food" alt="Food" />
+            </section>
+            <section>
+                <h2>About Us</h2>
+                <p>We’re students using AI to reduce food waste. 💡</p>
+            </section>
 
-const styles = {
-  background: {
-    backgroundImage: 'url("https://images.unsplash.com/photo-1504674900247-0877df9cc836")', // Change to any image URL or local file
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    height: '100vh',
-    color: 'white',
-    fontFamily: 'Arial, sans-serif',
-  },
-  navbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '20px 40px',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  logo: {
-    margin: 0,
-  },
-  navButton: {
-    color: 'white',
-    marginLeft: '20px',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    padding: '8px 12px',
-    border: '1px solid white',
-    borderRadius: '5px',
-  },
-  content: {
-    textAlign: 'center',
-    marginTop: '20vh',
-    padding: '0 20px',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'inline-block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-};
+         
+            
+        </div>
+        <footer className="footer">
+            <p>© 2025 RecipeRec. All rights reserved.</p>
+            <p><a href="#">About Us</a> | <a href="#">Contact</a></p>
+        </footer>
+  </>
+  );
+   
+    
+}
 
 export default HomePage;

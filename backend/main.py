@@ -79,7 +79,9 @@ async def login_user(user: UserCreate, db: Session = Depends(get_db)):
     }
     token = jwt.encode(token_data, "secret-key", algorithm="HS256")
     
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, 
+            "token_type": "bearer",
+            "email": db_user.email,}
 
 
 # Create a route: GET /recipes?ingredients=apple,banana
