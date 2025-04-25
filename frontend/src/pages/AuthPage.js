@@ -23,8 +23,10 @@ function AuthPage() {
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
+        localStorage.setItem("token", data.access_token);
         setMessage(
           isRegistering
             ? `Succesfully registered: ${data.email}`

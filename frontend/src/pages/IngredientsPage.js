@@ -15,10 +15,32 @@ function IngredientsPage() {
     }
   };
 
-  const handleGenerateRecipes = () => {
+  const handleGenerateRecipes = async () => {
+    console.log("hey")
+    const token = localStorage.getItem('token');
+    console.log("Token:", token);
+    if (!token) {
+      console.error('No token found');
+      return; // Stop further execution if no token
+    }
     if (ingredientList.length > 0) {
-      const query = ingredientList.join(',');
-      navigate(`/recipes?ingredients=${encodeURIComponent(query)}`);
+      try {
+        // STEP 1: Save ingredients to the database
+        await fetch('http://localhost:8000/save-ingredients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // only if using auth
+          },
+          body: JSON.stringify({ ingredients: ingredientList }),
+        });
+  
+        // STEP 2: Navigate to recipes page
+        const query = ingredientList.join(',');
+        navigate(`/recipes?ingredients=${encodeURIComponent(query)}`);
+      } catch (err) {
+        console.error("Error saving ingredients:", err);
+      }
     }
   };
 
