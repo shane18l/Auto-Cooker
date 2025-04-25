@@ -1,7 +1,7 @@
 .ingredients-container {
     padding: 80px 20px 20px; /* offset for navbar */
     text-align: center;
-    background: #f7f7f7;
+    background: #807878;
     min-height: 100vh;
   }
   
@@ -29,4 +29,43 @@
   
   .ingredients-form button:hover {
     background-color: #529edb;
+  }
+
+  .ingredient-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  .ingredient-card {
+    position: relative;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .ingredient-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 8px;
+  }
+  
+  .ingredient-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #b00020;
   }

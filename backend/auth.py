@@ -43,8 +43,8 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     if not db_user or not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password_hash.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    token_data = {
-        "sub": (db_user.user_id), 
+    token_data = { 
+        "sub": str(db_user.user_id), 
         "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     }
 
@@ -58,9 +58,10 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
 
 def verify_token(token: str, db: Session):
     print("SECRET_KEY (verify):", SECRET_KEY)
+    print(f"All user IDs in DB: {[u.user_id for u in db.query(models.User).all()]}")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = (payload.get("sub"))
+        user_id = int(payload.get("sub"))
         print(f"Decoded token: {payload}")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")

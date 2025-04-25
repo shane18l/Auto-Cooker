@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from fastapi.security import OAuth2PasswordBearer
 from typing import List
 import httpx
@@ -17,7 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 router = APIRouter()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
+ALGORITHM = "HS256" 
 
 class IngredientList(BaseModel):
     ingredients: List[str]
@@ -78,3 +79,18 @@ def save_recipes(recipes: List[dict], user=Depends(get_current_user), db: Sessio
         ))
     db.commit()
     return {"message": "Recipes saved"}
+
+@router.post("/remove-ingredient")
+async def remove_ingredient(
+    ingredient: str, 
+    db: Session = Depends(get_db), 
+    current_user=Depends(get_current_user)):
+
+    try:
+        # Query to remove the ingredient from the user's list
+        db.query(models.Ingredient).filter(models.Ingredient.user_id == current_user.user_id, models.Ingredient.ingredient_name == ingredient).delete()
+        db.commit()
+        return {"message": "Ingredient removed successfully"}
+    except SQLAlchemyError as e:
+        db.rollback()  # Rollback if something goes wrong
+        raise HTTPException(status_code=500, detail="Error removing ingredient")

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './IngredientsPage.css'; // You can create a new CSS file
 import Navbar from './Navbar';
+import validIngredients from '../ingredients.json';
 
 function IngredientsPage() {
   const [input, setInput] = useState('');
@@ -9,9 +10,34 @@ function IngredientsPage() {
   const navigate = useNavigate();
 
   const handleAddIngredient = () => {
-    if (input.trim() !== '') {
-      setIngredientList([...ingredientList, input.trim()]);
+    const trimmedInput = input.trim().toLowerCase();
+    if (trimmedInput && validIngredients.includes(trimmedInput)) {
+      setIngredientList([...ingredientList, trimmedInput]);
       setInput('');
+    } else {
+      alert('Please enter a valid ingredient.');
+    }
+  };
+
+  const handleRemoveIngredient = async (index) => {
+    const removedIngredient = ingredientList[index];
+    const updatedList = ingredientList.filter((_, i) => i !== index);
+    setIngredientList(updatedList);
+  
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await fetch('http://localhost:8000/remove-ingredient', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ ingredient: removedIngredient }),
+        });
+      } catch (err) {
+        console.error("Error removing ingredient:", err);
+      }
     }
   };
 
@@ -35,9 +61,9 @@ function IngredientsPage() {
           body: JSON.stringify({ ingredients: ingredientList }),
         });
   
-        // STEP 2: Navigate to recipes page
-        const query = ingredientList.join(',');
-        navigate(`/recipes?ingredients=${encodeURIComponent(query)}`);
+        // // STEP 2: Navigate to recipes page
+        // const query = ingredientList.join(',');
+        // navigate(`/recipes?ingredients=${encodeURIComponent(query)}`);
       } catch (err) {
         console.error("Error saving ingredients:", err);
       }
@@ -60,12 +86,17 @@ function IngredientsPage() {
         </div>
         {ingredientList.length > 0 && (
           <div className="ingredient-list">
-            <h3>Current Ingredients:</h3>
-            <ul>
-              {ingredientList.map((ing, index) => (
-                <li key={index}>{ing}</li>
-              ))}
-            </ul>
+            {ingredientList.map((ingredient, index) => (
+              <div key={index} className="ingredient-card">
+                <img
+                  src={`https://spoonacular.com/cdn/ingredients_100x100/${ingredient}.jpg`}
+                  alt={ingredient}
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://spoonacular.com/application/frontend/images/default-food.png'; }}
+                />
+                <p>{ingredient}</p>
+                <button className="remove-btn" onClick={() => handleRemoveIngredient(index)}>-</button>
+              </div>
+            ))}
           </div>
         )}
     </div>

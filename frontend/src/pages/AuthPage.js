@@ -15,7 +15,7 @@ function AuthPage() {
     const endpoint = isRegistering ? 'register' : 'login';
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/${endpoint}`, {
+      const response = await fetch(`http://localhost:8000/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,9 +36,9 @@ function AuthPage() {
             setTimeout(() => navigate('/'), 1000);
         }
       } else {
-        setMessage('Something went wrong.');
+        setMessage('Something went wrong.'); 
       }
-    } catch (error) {
+    } catch (error) { 
       console.error('Error:', error);
       setMessage('Server error.');
     }
