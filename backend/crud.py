@@ -23,6 +23,9 @@ ALGORITHM = "HS256"
 class IngredientList(BaseModel):
     ingredients: List[str]
 
+class IngredientToRemove(BaseModel):
+    ingredient: str
+
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     print("Got token:", token)
     return auth.verify_token(token, db)
@@ -82,15 +85,17 @@ def save_recipes(recipes: List[dict], user=Depends(get_current_user), db: Sessio
 
 @router.post("/remove-ingredient")
 async def remove_ingredient(
-    ingredient: str, 
+    payload: IngredientToRemove, 
     db: Session = Depends(get_db), 
     current_user=Depends(get_current_user)):
 
     try:
-        # Query to remove the ingredient from the user's list
-        db.query(models.Ingredient).filter(models.Ingredient.user_id == current_user.user_id, models.Ingredient.ingredient_name == ingredient).delete()
+        db.query(models.Ingredient).filter(
+            models.Ingredient.user_id == current_user.user_id,
+            models.Ingredient.ingredient_name == payload.ingredient
+        ).delete()
         db.commit()
         return {"message": "Ingredient removed successfully"}
-    except SQLAlchemyError as e:
-        db.rollback()  # Rollback if something goes wrong
+    except SQLAlchemyError:
+        db.rollback()
         raise HTTPException(status_code=500, detail="Error removing ingredient")

@@ -56,7 +56,7 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
         "email": db_user.email
     }
 
-def verify_token(token: str, db: Session):
+def verify_token(token: str, db: Session):  
     print("SECRET_KEY (verify):", SECRET_KEY)
     print(f"All user IDs in DB: {[u.user_id for u in db.query(models.User).all()]}")
     try:
