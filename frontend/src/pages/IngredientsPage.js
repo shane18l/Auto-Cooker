@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './IngredientsPage.css'; // You can create a new CSS file
 import Navbar from './Navbar';
@@ -7,10 +7,39 @@ import validIngredients from '../ingredients.json';
 function IngredientsPage() {
   const [input, setInput] = useState('');
   const [ingredientList, setIngredientList] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
 
-  const handleAddIngredient = () => {
-    const trimmedInput = input.trim().toLowerCase();
+  useEffect(() => {
+    const fetchUserIngredients = async () => {
+      console.log("Stored token:", localStorage.getItem('token'));
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const response = await fetch('http://localhost:8000/get-ingredients', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setIngredientList(data.ingredients); // assuming your backend returns { "ingredients": ["egg", "milk"] }
+        } else {
+          console.error("Failed to fetch ingredients");
+        }
+      } catch (error) {
+        console.error("Error fetching ingredients:", error);
+      }
+    };
+
+    fetchUserIngredients();
+  }, []);
+
+  const handleAddIngredient = (customInput) => {
+    const rawInput = customInput !== undefined ? customInput : input;
+    const trimmedInput = rawInput.trim().toLowerCase();
     if (trimmedInput && validIngredients.includes(trimmedInput)) {
       setIngredientList([...ingredientList, trimmedInput]);
       setInput('');
@@ -42,7 +71,7 @@ function IngredientsPage() {
   };
 
   const handleGenerateRecipes = async () => {
-    console.log("hey")
+    console.log("Fetching Recipes")
     const token = localStorage.getItem('token');
     console.log("Token:", token);
     if (!token) {
@@ -60,10 +89,23 @@ function IngredientsPage() {
           },
           body: JSON.stringify({ ingredients: ingredientList }),
         });
-  
-        // // STEP 2: Navigate to recipes page
-        // const query = ingredientList.join(',');
-        // navigate(`/recipes?ingredients=${encodeURIComponent(query)}`);
+
+        const response = await fetch('http://localhost:8000/generate-recipes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ ingredients: ingredientList }),
+        });
+      
+          if (response.ok) {
+            const recipes = await response.json();
+            // Redirect to recipes page with fetched recipes
+            navigate('/recipes', { state: { recipes } });
+          } else {
+            console.error("Failed to fetch recipes");
+          }
       } catch (err) {
         console.error("Error saving ingredients:", err);
       }
@@ -73,16 +115,42 @@ function IngredientsPage() {
   return (
     <div className="ingredients-container">
         <Navbar />
-      <h1>🧺 What's in Your Fridge?</h1>
-      <div className="input-group">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="e.g., eggs, milk"
-          />
-          <button onClick={handleAddIngredient}>Add Ingredient</button>
-          <button onClick={handleGenerateRecipes}>Generate Recipes</button>
+      <h1>🧺 Your Fridge</h1>
+        <div className="ingredients-form">
+          <div className="input-wrapper">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => {
+                const value = e.target.value;
+                setInput(value);
+                if (value.length > 0) {
+                  const matches = validIngredients.filter(ingredient =>
+                    ingredient.toLowerCase().includes(value.toLowerCase())
+                  ).slice(0, 5); // Limit to 10 suggestions
+              
+                  setSuggestions(matches);
+                } else {
+                  setSuggestions([]);
+                }
+              }}
+              placeholder="e.g., eggs, milk"
+            />
+            {suggestions.length > 0 && (
+            <ul className="suggestions-list">
+              {suggestions.map((suggestion, index) => (
+                <li key={index} onClick={() => {
+                  handleAddIngredient(suggestion);
+                  setSuggestions([]);
+                }}>
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+            )}
+          </div>
+            <button onClick={handleAddIngredient}>Add Ingredient</button>
+            <button onClick={handleGenerateRecipes}>Generate Recipes</button>
         </div>
         {ingredientList.length > 0 && (
           <div className="ingredient-list">

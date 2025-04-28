@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import bcrypt
-from jose import jwt, JWTError
-import datetime
+from jose import jwt, JWTError 
+from datetime import datetime, timedelta
 from database import get_db
-import models
+import models 
 
 
 from dotenv import load_dotenv
@@ -13,7 +13,7 @@ import os
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
+ALGORITHM = "HS256" 
 
 router = APIRouter()
 
@@ -42,10 +42,11 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if not db_user or not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password_hash.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-
+    
+    expire = datetime.utcnow() + timedelta(hours=24)
     token_data = { 
         "sub": str(db_user.user_id), 
-        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
+        "exp": expire
     }
 
     token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)

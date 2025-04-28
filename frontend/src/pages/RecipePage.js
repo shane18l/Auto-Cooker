@@ -1,44 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import './RecipePage.css';
+import Navbar from './Navbar';
 
 function RecipesPage() {
-  const [ingredients, setIngredients] = useState('');
-  const [recipes, setRecipes] = useState([]);
-
-  const handleInputChange = (e) => setIngredients(e.target.value);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const query = ingredients.split(',').map(i => i.trim()).join('&ingredients=');
-      const response = await fetch(`http://127.0.0.1:8000/recipes?ingredients=${query}`);
-      const data = await response.json();
-      setRecipes(data);
-    } catch (error) {
-      console.error('Error fetching recipes:', error);
-    }
-  };
-
+  const location = useLocation();
+  const { recipes } = location.state || {};  // Get recipes from the state passed from IngredientsPage
+  
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>🍳 Recipe Recommender</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={ingredients}
-          onChange={handleInputChange}
-          placeholder="Enter ingredients (e.g., eggs, milk)"
-          style={{ width: '300px', padding: '0.5rem', marginRight: '1rem' }}
-        />
-        <button type="submit" style={{ padding: '0.5rem 1rem' }}>Get Recipes</button>
-      </form>
-      <div style={{ marginTop: '2rem' }}>
-        <h2>🥘 Suggested Recipes:</h2>
-        {recipes.length > 0 ? (
-          <ul>{recipes.map((recipe) => <li key={recipe.id}>{recipe.title}</li>)}</ul>
-        ) : (
-          <p>No recipes yet. Try entering some ingredients above!</p>
-        )}
-      </div>
+    <div className="recipes-container">
+      <Navbar />
+      <h1>🍽️ Recipe Suggestions</h1>
+      {recipes && recipes.length > 0 ? (
+        <div className="recipes-list">
+          {recipes.map((recipe, index) => (
+            <div key={index} className="recipe-card">
+              <img
+                src={recipe.image}
+                alt={recipe.title}
+                onError={(e) => { e.target.onerror = null; e.target.src = 'https://spoonacular.com/application/frontend/images/default-food.png'; }}
+              />
+              <h2>{recipe.title}</h2>
+              <a href={`https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-').toLowerCase()}-${recipe.id}`} target="_blank" rel="noopener noreferrer">
+                View Recipe
+              </a>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No recipes found for your ingredients.</p>
+      )}
     </div>
   );
 }
