@@ -12,6 +12,7 @@ from database import get_db
 import models, auth
 from models import User
 import requests
+from datetime import datetime
 
 
 load_dotenv()
@@ -29,11 +30,20 @@ class IngredientList(BaseModel):
 class IngredientToRemove(BaseModel):
     ingredient: str
 
+class FavouriteRecipe(BaseModel):
+    id: int
+    title: str 
+    image: str
+    url: str
+
+class RecipeRequest(BaseModel):
+    id: int
+
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     print("Got token:", token)
     return auth.verify_token(token, db)
 
-
+ 
 @router.get("/recipes")
 async def get_recipes(ingredients: List[str] = Query(...)):
     url = "https://api.spoonacular.com/recipes/findByIngredients"
@@ -116,3 +126,55 @@ async def generate_recipes(request: Request):
         return response.json()
     else:
         return JSONResponse(content={"error": "Failed to fetch recipes"}, status_code=500)
+    
+@router.post("/add-favorite")
+def add_favorite(
+    payload: FavouriteRecipe,
+    user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+    ):
+    favorite = models.Recipe(
+        user_id = user.user_id,
+        recipe_id = payload.id,
+        recipe_title = payload.title,
+        image_url = payload.image,
+        source_url = payload.url,
+        created_at=datetime.utcnow(),
+    )
+    db.add(favorite)
+    db.commit() 
+    return {"message": "Ingredients saved"}
+
+@router.get("/get-favorites")
+def get_favorite(
+    user = Depends(get_current_user),
+    db : Session = Depends(get_db),
+    ): 
+    favorites = db.query(models.Recipe).filter_by(user_id=user.user_id).all()
+    return {
+        "favorites": [
+            {
+                "id": fav.recipe_id,
+                "title": fav.recipe_title,
+                "image": fav.image_url,
+                "url": fav.source_url,
+            } for fav in favorites
+        ]
+    }
+
+@router.post("/remove-favorite")
+def remove_favorite(
+    payload : RecipeRequest, 
+    user = Depends(get_current_user), 
+    db: Session = Depends(get_db),
+    ):
+    print(type(payload), payload)
+    print(payload.id)
+    recipe = db.query(models.Recipe).filter(
+        models.Recipe.recipe_id == payload.id, 
+        models.Recipe.user_id == user.user_id).first()
+    if not recipe: 
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    db.delete(recipe) 
+    db.commit() 
+    return {"message": "Recipe removed from favorites"}

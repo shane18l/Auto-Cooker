@@ -17,10 +17,12 @@ class Ingredient(Base):
     created_at = Column(DateTime, server_default=func.now())
 
 class Recipe(Base):
-    __tablename__ = 'recipes' 
-    id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
-    url = Column(String)
-    image = Column(String)
-    ingredients = Column(Text)
+    __tablename__ = 'favorite_recipes' 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    recipe_id = Column(Integer) 
     user_id = Column(Integer) 
+    recipe_title = Column(String, nullable=False)
+    source_url = Column(String)
+    image_url = Column(String)
+    created_at = Column(DateTime, server_default=func.now())
+    

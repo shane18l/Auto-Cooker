@@ -5,8 +5,40 @@ import Navbar from './Navbar';
 
 function RecipesPage() {
   const location = useLocation();
-  const { recipes } = location.state || {};  // Get recipes from the state passed from IngredientsPage
-  
+  const { recipes } = location.state || {};
+
+  const handleFavorite = async (recipe) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("You must be logged in to favorite a recipe!");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/add-favorite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          id: recipe.id,
+          title: recipe.title,
+          image: recipe.image,
+          url: `https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-').toLowerCase()}-${recipe.id}`,
+        })
+      });
+
+      if (response.ok) {
+        alert('Recipe added to favorites!');
+      } else {
+        alert('Failed to add favorite.');
+      }
+    } catch (error) {
+      console.error('Error favoriting recipe:', error);
+    }
+  };
+
   return (
     <div className="recipes-container">
       <Navbar />
@@ -15,6 +47,9 @@ function RecipesPage() {
         <div className="recipes-list">
           {recipes.map((recipe, index) => (
             <div key={index} className="recipe-card">
+              <div className="favorite-icon" onClick={() => handleFavorite(recipe)}>
+                ⭐
+              </div>
               <img
                 src={recipe.image}
                 alt={recipe.title}

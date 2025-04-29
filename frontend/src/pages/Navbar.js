@@ -8,7 +8,7 @@ function Navbar() {
       <h2>Recipe Recommender</h2>
       <div className="navbar-links">
         <Link to="/">Home</Link>
-        <Link to="/recipes">My Recipes</Link>
+        <Link to="/fav_recipes">My Recipes</Link>
         <Link to="/ingredients">Fridge</Link>
         <Link to="/auth">Login</Link>
         <Link to="/auth">Register</Link>

@@ -1,0 +1,47 @@
+.favorites-container {
+    padding: 120px 20px 20px; /* offset for navbar */
+  }
+  
+  .favorites-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .no-favorites-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
+  }
+  
+  .favorites-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .recipe-card {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recipe-name {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: #222;
+  }
+  
+  .recipe-description {
+    font-size: 1rem;
+    color: #555;
+  }
