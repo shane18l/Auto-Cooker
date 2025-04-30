@@ -66,10 +66,11 @@ def save_ingredients(
     db: Session = Depends(get_db)
 ):
     
-    print("User:", user.email)
-    print("Ingredients received:", payload.ingredients)
+    existing_ingredients = db.query(models.Ingredient).filter_by(user_id=user.user_id).all()
+    existing_names = set([ing.ingredient_name for ing in existing_ingredients])
     for name in payload.ingredients:
-        db.add(models.Ingredient(ingredient_name=name, user_id=user.user_id))
+        if name not in existing_names:
+            db.add(models.Ingredient(ingredient_name=name, user_id=user.user_id))
     db.commit()
     return {"message": "Ingredients saved"}
 

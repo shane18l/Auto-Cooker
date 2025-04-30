@@ -46,6 +46,7 @@
     cursor: pointer;
     font-size: 24px;
     color: grey;
+    font-size: 24px;
   }
   
   .favorite-icon:hover {

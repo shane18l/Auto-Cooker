@@ -25,29 +25,51 @@
   }
 
   .footer {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(255, 255, 255, 0.6);
     padding: 20px;
     text-align: center;
     margin-top: auto; /* Stick footer to the bottom */
   }
 
   .info-section {
-    background: linear-gradient(to bottom, rgba(230, 216, 216, 0.95), #ffffff);
-    padding: 60px 20px;
-    text-align: center;
-    box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.1); /* soft transition from dark to light */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 3rem 2rem;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
   }
-
-.info-section section {
-  max-width: 800px;
-  margin: 0 auto 60px auto;
-}
-
-.info-section img {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 20px;
-}
+  
+  .info-section section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .info-section section:hover {
+    transform: translateY(-4px);
+  }
+  
+  .info-section h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+  }
+  
+  .info-section p {
+    color: #555;
+    font-size: 1rem;
+  }
+  
+  .info-section img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
 
 .my-ingredients-button {
     text-align: center;

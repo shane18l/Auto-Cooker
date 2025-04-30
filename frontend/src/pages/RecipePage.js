@@ -6,6 +6,12 @@ import Navbar from './Navbar';
 function RecipesPage() {
   const location = useLocation();
   const { recipes } = location.state || {};
+  const [favoriteStates, setFavoriteStates] = React.useState(() =>
+    recipes.reduce((acc, recipe) => {
+      acc[recipe.id] = false;
+      return acc;
+    }, {})
+  );
 
   const handleFavorite = async (recipe) => {
     const token = localStorage.getItem('token');
@@ -13,7 +19,7 @@ function RecipesPage() {
       alert("You must be logged in to favorite a recipe!");
       return;
     }
-
+  
     try {
       const response = await fetch('http://localhost:8000/add-favorite', {
         method: 'POST',
@@ -28,9 +34,13 @@ function RecipesPage() {
           url: `https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-').toLowerCase()}-${recipe.id}`,
         })
       });
-
+  
       if (response.ok) {
-        alert('Recipe added to favorites!');
+        // Toggle favorite state
+        setFavoriteStates(prev => ({
+          ...prev,
+          [recipe.id]: !prev[recipe.id]
+        }));
       } else {
         alert('Failed to add favorite.');
       }
@@ -48,7 +58,7 @@ function RecipesPage() {
           {recipes.map((recipe, index) => (
             <div key={index} className="recipe-card">
               <div className="favorite-icon" onClick={() => handleFavorite(recipe)}>
-                ⭐
+                {favoriteStates[recipe.id] ? '⭐' : '☆'}
               </div>
               <img
                 src={recipe.image}

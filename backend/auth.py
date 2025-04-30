@@ -50,7 +50,7 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     }
 
     token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
-
+ 
     return {
         "access_token": token,
         "token_type": "bearer",
