@@ -25,4 +25,12 @@ class Recipe(Base):
     source_url = Column(String)
     image_url = Column(String)
     created_at = Column(DateTime, server_default=func.now())
+
+class FeaturedRecipe(Base):
+    __tablename__ = 'featured_recipes' 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    recipe_title = Column(String, nullable=False)
+    source_url = Column(String)
+    image_url = Column(String)
+    created_at = Column(DateTime, server_default=func.now())
     

@@ -46,7 +46,8 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     expire = datetime.utcnow() + timedelta(hours=24)
     token_data = { 
         "sub": str(db_user.user_id), 
-        "exp": expire
+        "exp": expire,
+        "email" : user.email,
     }
 
     token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
@@ -58,13 +59,11 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     }
 
 def verify_token(token: str, db: Session):  
-    print("SECRET_KEY (verify):", SECRET_KEY)
-    print(f"All user IDs in DB: {[u.user_id for u in db.query(models.User).all()]}")
-    try:
+    try: 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = int(payload.get("sub"))
-        print(f"Decoded token: {payload}")
-        if user_id is None:
+        print(f"Decoded token: {payload}") 
+        if user_id is None: 
             raise HTTPException(status_code=401, detail="Invalid token")
 
         user = db.query(models.User).filter(models.User.user_id == user_id).first()

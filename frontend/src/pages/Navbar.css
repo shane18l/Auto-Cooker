@@ -39,3 +39,29 @@
     border-radius: 5px;
     white-space: nowrap;
   }
+
+  .navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 16px;
+  }
+  
+  .navbar-username {
+    font-weight: 500;
+    color: #fff;
+    font-size: 15px;
+  }
+
+  .logout-button:hover {
+    text-decoration: underline;
+    color: #ff4d4d;
+  }
+
+  .logout-button {
+    margin-left: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: red;
+  }

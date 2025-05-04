@@ -12,7 +12,8 @@ from database import get_db
 import models, auth
 from models import User
 import requests
-from datetime import datetime
+from datetime import datetime, date
+import random
 
 
 load_dotenv()
@@ -38,6 +39,36 @@ class FavouriteRecipe(BaseModel):
 
 class RecipeRequest(BaseModel):
     id: int
+
+
+
+
+BATCH_SIZE = 1000
+API_URL = f'https://api.spoonacular.com/recipes/random?number={BATCH_SIZE}&apiKey={SPOONACULAR_API_KEY}'
+
+
+
+
+# # Fetch 100 random recipes
+# response = requests.get(API_URL)
+# data = response.json()
+
+# db_gen = get_db()
+# db: Session = next(db_gen)
+
+# for recipe in data.get('recipes', []):
+#     new_recipe = models.FeaturedRecipe(
+#                     recipe_title = recipe.get("title"),
+#                     image_url = recipe.get("sourceUrl", ""),
+#                     source_url = recipe.get("image", ""),
+#                     created_at=datetime.utcnow(),
+#                 )
+#     db.add(new_recipe)
+
+# db.commit()
+
+# print(f"Inserted {len(data['recipes'])} recipes.")
+
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     print("Got token:", token)
@@ -179,3 +210,12 @@ def remove_favorite(
     db.delete(recipe) 
     db.commit() 
     return {"message": "Recipe removed from favorites"}
+
+@router.get("/featured")
+def get_featured_recipes(db: Session = Depends(get_db)):
+    all_recipes = db.query(models.FeaturedRecipe).all()
+
+    # Use today's date to get consistent "random" recipes every day
+    random.seed(date.today().toordinal())
+    featured = random.sample(all_recipes, min(5, len(all_recipes)))
+    return featured

@@ -149,7 +149,7 @@ function IngredientsPage() {
             </ul>
             )}
           </div>
-            <button onClick={handleAddIngredient}>Add Ingredient</button>
+            {/* <button onClick={handleAddIngredient}>Add Ingredient</button> */}
             <button onClick={handleGenerateRecipes}>Generate Recipes</button>
         </div>
         {ingredientList.length > 0 && (

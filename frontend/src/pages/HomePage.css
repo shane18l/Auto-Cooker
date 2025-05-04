@@ -24,8 +24,19 @@
     max-width: 600px;
   }
 
+  .how-it-works-overlay {
+    text-align: center;
+    margin: 20px auto;
+    margin-top: 200px;
+    background-color: rgb(236, 95, 95, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    color: rgb(0, 0, 0);
+  }
+
   .footer {
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(51, 44, 44, 0.6);
     padding: 20px;
     text-align: center;
     margin-top: auto; /* Stick footer to the bottom */
@@ -89,3 +100,125 @@
   .my-ingredients-button button:hover {
     background-color: rgba(255, 255, 255, 0.9);
   }
+
+  
+
+  .recipe-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .recipe-carousel img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+  }
+  
+  .recipe-carousel button {
+    background-color: #fff;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+  }
+  
+  .recipe-carousel button:hover {
+    background-color: #eee;
+  }
+  
+
+  .more-info {
+    background-color: #f9f9f9;
+    font-size: 30px;
+  }
+  .more-info h2 {
+    font-size: 40px;
+  }
+
+  .more-info {
+    background-color: #f9f9f9;
+  }
+
+  .more-info section {
+    background-color: rgba(255, 255, 255, 0.9); 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 2rem;
+    flex-wrap: wrap;
+    text-align: left;
+    
+  }
+  .more-info section img {
+    width: 40%;
+    height: auto;
+    margin-top: 0;
+    margin-right: 40px;
+    border-radius: 10px;
+  }
+
+  .more-info div {
+    margin-left: 80px;
+    /* background-color: rgba(139, 27, 27, 0.9); */
+  }
+
+  .more-info p {
+    font-size: 20px;
+  }
+
+  .info-section form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .info-section textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .info-section button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .info-section button:hover {
+    background-color: #45a049;
+  }
+
+  .recipe-card {
+    text-align: center;
+    max-width: 600px;
+}
+
+.recipe-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.recipe-title {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    font-weight: bold;
+}

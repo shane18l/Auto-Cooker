@@ -36,6 +36,7 @@ app.include_router(auth.router)
 app.include_router(crud.router)
 
 
+
 # load_dotenv()  # Load variables from the .env file
 
 # SECRET_KEY = os.getenv("SECRET_KEY")
