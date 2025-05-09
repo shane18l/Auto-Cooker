@@ -29,11 +29,15 @@ class UserOut(BaseModel):
 
 @router.post("/register", response_model=UserOut)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
     db_user = models.User(email=user.email, password_hash=hashed_password.decode('utf-8'))
     db.add(db_user)
     db.commit()
-    db.refresh(db_user)
+    db.refresh(db_user)  
     return db_user
 
 @router.post("/login")
@@ -42,7 +46,7 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if not db_user or not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password_hash.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    
+     
     expire = datetime.utcnow() + timedelta(hours=24)
     token_data = { 
         "sub": str(db_user.user_id), 

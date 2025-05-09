@@ -14,6 +14,8 @@ from models import User
 import requests
 from datetime import datetime, date
 import random
+import json
+from pathlib import Path
 
 
 load_dotenv()
@@ -215,7 +217,59 @@ def remove_favorite(
 def get_featured_recipes(db: Session = Depends(get_db)):
     all_recipes = db.query(models.FeaturedRecipe).all()
 
-    # Use today's date to get consistent "random" recipes every day
+    # Use today's date to get consistent "random" recipes every day 
     random.seed(date.today().toordinal())
     featured = random.sample(all_recipes, min(5, len(all_recipes)))
     return featured
+
+INGREDIENTS_FILE = Path("../frontend/src/ingredients.json")
+
+def load_ingredients():
+    if INGREDIENTS_FILE.exists():
+        with open(INGREDIENTS_FILE) as f:
+            return json.load(f)
+    return []
+
+def save_ingredients(ingredients):
+    with open(INGREDIENTS_FILE, "w") as f:
+        json.dump(sorted(set(ingredients)), f, indent=2)
+
+@router.get("/validateIngredient")
+async def validate_ingredient(query: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "https://api.spoonacular.com/food/ingredients/search",
+            params={
+                "query": query,
+                "number": 5,
+                "apiKey": SPOONACULAR_API_KEY
+            }
+        )
+
+    data = response.json()
+    suggestions = [item['name'].lower() for item in data.get("results", [])]
+
+    # Load current ingredients
+    current_ingredients = load_ingredients()
+    query_lower = query.strip().lower()
+
+    # Determine if exact match exists
+    if query_lower not in suggestions and query_lower in current_ingredients:
+        # Ingredient is invalid -> remove from file
+        current_ingredients.remove(query_lower)
+        print("Saving suggestions:", current_ingredients)
+        save_ingredients(current_ingredients)
+
+    # Add new suggestions if not already there
+    updated = False
+    for suggestion in suggestions:
+        if suggestion not in current_ingredients:
+            current_ingredients.append(suggestion)
+            updated = True
+    if updated:
+        save_ingredients(current_ingredients)
+
+    return {
+        "valid": query_lower in suggestions,
+        "suggestions": suggestions
+    }

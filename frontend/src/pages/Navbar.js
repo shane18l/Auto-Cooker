@@ -8,13 +8,16 @@ function Navbar() {
   const token = localStorage.getItem('token');
 
   let username = '';
+  let isValidToken = false;
+
   if (token) {
-    console.log(jwtDecode(token));
     try {
       const user = jwtDecode(token);
       username = user.email?.split('@')[0] ?? user.sub ?? 'User';
+      isValidToken = true; // Valid token, so update this flag
     } catch (e) {
-      console.error("Invalid token");
+      console.error("Invalid token:", e.message);
+      localStorage.removeItem('token');  // Remove invalid token
     }
   }
 
@@ -30,17 +33,14 @@ function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/fav_recipes">My Recipes</Link>
         <Link to="/ingredients">Fridge</Link>
-        {token ? (
-          <>
-            <div className="navbar-user">
-              <span className="navbar-username">Hello, {username}</span>
-              <button onClick={handleLogout} className="logout-button">Logout</button>
-            </div>
-          </>
+        {isValidToken ? (
+          <div className="navbar-user">
+            <span className="navbar-username">Hello, {username}</span>
+            <button onClick={handleLogout} className="logout-button">Logout</button>
+          </div>
         ) : (
           <>
-            <Link to="/auth">Login</Link>
-            <Link to="/auth">Register</Link>
+            <Link to="/auth">Sign in</Link>
           </>
         )}
       </div>

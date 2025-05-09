@@ -9,10 +9,10 @@ function IngredientsPage() {
   const [ingredientList, setIngredientList] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
+  const [invalidIngredients, setInvalidIngredients] = useState([]);
 
   useEffect(() => {
     const fetchUserIngredients = async () => {
-      console.log("Stored token:", localStorage.getItem('token'));
       const token = localStorage.getItem('token');
       if (!token) return;
 
@@ -37,16 +37,29 @@ function IngredientsPage() {
     fetchUserIngredients();
   }, []);
 
-  const handleAddIngredient = (customInput) => {
-    const rawInput = customInput !== undefined ? customInput : input;
-    const trimmedInput = rawInput.trim().toLowerCase();
-    if (trimmedInput && validIngredients.includes(trimmedInput)) {
-      setIngredientList([...ingredientList, trimmedInput]);
-      setInput('');
-    } else {
-      alert('Please enter a valid ingredient.');
+  const validateAllIngredients = async (ingredients) => {
+    const invalid = [];
+
+    for (const ing of ingredients) {
+      const res = await fetch(`http://localhost:8000/validateIngredient?query=${encodeURIComponent(ing)}`);
+      const data = await res.json();
+
+      if (!data.valid) {
+        invalid.push({ name: ing, suggestions: data.suggestions });
+      }
     }
+
+    return invalid;
   };
+
+  const handleAddIngredient = (customInput) => {
+    const rawInput = String(customInput !== undefined ? customInput : input);
+    const trimmedInput = rawInput.trim().toLowerCase();
+    console.log(trimmedInput);
+    setIngredientList([...ingredientList, trimmedInput]);
+    setInput('');
+    setSuggestions([]);
+  }
 
   const handleRemoveIngredient = async (index) => {
     const removedIngredient = ingredientList[index];
@@ -71,46 +84,48 @@ function IngredientsPage() {
   };
 
   const handleGenerateRecipes = async () => {
-    console.log("Fetching Recipes")
-    const token = localStorage.getItem('token');
-    console.log("Token:", token);
-    if (!token) {
-      console.error('No token found');
-      return; // Stop further execution if no token
+    const invalids = await validateAllIngredients(ingredientList);
+    if (invalids.length > 0) {
+      setInvalidIngredients(invalids);
+      return;
     }
+    const token = localStorage.getItem('token');
     if (ingredientList.length > 0) {
-      try {
-        // STEP 1: Save ingredients to the database
-        await fetch('http://localhost:8000/save-ingredients', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // only if using auth
-          },
-          body: JSON.stringify({ ingredients: ingredientList }),
-        });
-
-        const response = await fetch('http://localhost:8000/generate-recipes', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({ ingredients: ingredientList }),
-        });
-      
-          if (response.ok) {
-            const recipes = await response.json();
-            // Redirect to recipes page with fetched recipes
-            navigate('/recipes', { state: { recipes } });
-          } else {
-            console.error("Failed to fetch recipes");
-          }
-      } catch (err) {
-        console.error("Error saving ingredients:", err);
+      if (token) { 
+        try {
+          // STEP 1: Save ingredients to the database
+          await fetch('http://localhost:8000/save-ingredients', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // only if using auth
+            },
+            body: JSON.stringify({ ingredients: ingredientList }),
+          });
+        }
+        catch (err) {
+          console.error("Error saving ingredients:", err);
+        }
+      }
+      const response = await fetch('http://localhost:8000/generate-recipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ingredients: ingredientList }),
+      });
+    
+      if (response.ok) {
+        const recipes = await response.json();
+        // Redirect to recipes page with fetched recipes
+        navigate('/recipes', { state: { recipes } });
+      } else {
+        console.error("Failed to fetch recipes");
       }
     }
   };
+
 
   return (
     <div className="ingredients-container">
@@ -139,8 +154,8 @@ function IngredientsPage() {
             {suggestions.length > 0 && (
             <ul className="suggestions-list">
               {suggestions.map((suggestion, index) => (
-                <li key={index} onClick={() => {
-                  handleAddIngredient(suggestion);
+                <li key={index} onClick={async () => {
+                  setInput(suggestion);
                   setSuggestions([]);
                 }}>
                   {suggestion}
@@ -149,9 +164,21 @@ function IngredientsPage() {
             </ul>
             )}
           </div>
-            {/* <button onClick={handleAddIngredient}>Add Ingredient</button> */}
+            <button onClick={() => handleAddIngredient()}>Add Ingredient</button>
             <button onClick={handleGenerateRecipes}>Generate Recipes</button>
         </div>
+        {invalidIngredients.length > 0 && (
+          <div className="invalid-ingredient-warning">
+            <p>The following ingredients are invalid:</p>
+            <ul>
+              {invalidIngredients.map((item, idx) => (
+                <li key={idx} style={{ color: 'red' }}>
+                  {item.name} — suggestions: {item.suggestions.join(', ') || 'none'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {ingredientList.length > 0 && (
           <div className="ingredient-list">
             {ingredientList.map((ingredient, index) => (

@@ -45,3 +45,9 @@
     font-size: 1rem;
     color: #555;
   }
+
+  .message {
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}

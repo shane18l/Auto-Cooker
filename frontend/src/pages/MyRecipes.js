@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 
 const MyRecipes = () => {
   const [favorites, setFavorites] = useState([]);
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,7 +13,7 @@ const MyRecipes = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          navigate('/login');
+          navigate('/auth');
           return;
         }
 
@@ -49,9 +50,11 @@ const MyRecipes = () => {
 
       if (response.ok) {
         setFavorites(prev => prev.filter(r => r.id !== recipeId));
-        alert('Recipe removed from favorites.');
+        setMessage('Recipe removed from favorites.');
+        setTimeout(() => setMessage(''), 1500);
       } else {
-        alert('Failed to remove recipe.');
+        setMessage('Failed to remove recipe.');
+        setTimeout(() => setMessage(''), 1500);
       }
     } catch (error) {
       console.error('Error removing favorite:', error);
@@ -62,6 +65,7 @@ const MyRecipes = () => {
     <div className="recipes-container">
       <Navbar />
       <h1>⭐ My Recipes</h1>
+      {message && <p className="message">{message}</p>}
       {favorites.length === 0 ? (
         <p>No favorite recipes found.</p>
       ) : (

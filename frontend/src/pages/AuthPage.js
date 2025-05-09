@@ -36,7 +36,13 @@ function AuthPage() {
             setTimeout(() => navigate('/'), 1000);
         }
       } else {
-        setMessage('Something went wrong.'); 
+          if (data.detail === "Email already registered") {
+          setMessage("This email is already tied to an account!");
+        } else if (data.detail === "Invalid credentials") {
+          setMessage("Invalid credentials");
+        } else {
+          setMessage("Something went wrong.");
+        }
       }
     } catch (error) { 
       console.error('Error:', error);

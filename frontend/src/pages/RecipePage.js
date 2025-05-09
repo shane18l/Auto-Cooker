@@ -3,7 +3,10 @@ import { useLocation } from 'react-router-dom';
 import './RecipePage.css';
 import Navbar from './Navbar';
 
+
 function RecipesPage() {
+
+  const [authWarning, setAuthWarning] = React.useState('');
   const location = useLocation();
   const { recipes } = location.state || {};
   const [favoriteStates, setFavoriteStates] = React.useState(() =>
@@ -16,7 +19,7 @@ function RecipesPage() {
   const handleFavorite = async (recipe) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert("You must be logged in to favorite a recipe!");
+      setAuthWarning('Please log in to favorite recipes.');
       return;
     }
   
@@ -53,6 +56,7 @@ function RecipesPage() {
     <div className="recipes-container">
       <Navbar />
       <h1>🍽️ Recipe Suggestions</h1>
+      {authWarning && <p className="auth-warning">{authWarning}</p>}
       {recipes && recipes.length > 0 ? (
         <div className="recipes-list">
           {recipes.map((recipe, index) => (
