@@ -42,7 +42,6 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login_user(user: UserCreate, db: Session = Depends(get_db)):
-    print("SECRET_KEY (login):", SECRET_KEY)
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if not db_user or not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password_hash.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Invalid credentials")
@@ -66,7 +65,6 @@ def verify_token(token: str, db: Session):
     try: 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = int(payload.get("sub"))
-        print(f"Decoded token: {payload}") 
         if user_id is None: 
             raise HTTPException(status_code=401, detail="Invalid token")
 
@@ -76,5 +74,4 @@ def verify_token(token: str, db: Session):
 
         return user
     except JWTError:
-        print("JWT error occurred")
         raise HTTPException(status_code=401, detail="Token expired or invalid")

@@ -55,7 +55,6 @@ function IngredientsPage() {
   const handleAddIngredient = (customInput) => {
     const rawInput = String(customInput !== undefined ? customInput : input);
     const trimmedInput = rawInput.trim().toLowerCase();
-    console.log(trimmedInput);
     setIngredientList([...ingredientList, trimmedInput]);
     setInput('');
     setSuggestions([]);

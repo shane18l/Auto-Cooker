@@ -37,8 +37,6 @@ const MyRecipes = () => {
   const handleUnfavorite = async (recipeId) => {
     const token = localStorage.getItem('token');
     try {
-      console.log(recipeId);
-      console.log(JSON.stringify({ id: recipeId }));
       const response = await fetch('http://127.0.0.1:8000/remove-favorite', {
         method: 'POST',
         headers: {
