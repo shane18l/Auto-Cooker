@@ -73,7 +73,6 @@ API_URL = f'https://api.spoonacular.com/recipes/random?number={BATCH_SIZE}&apiKe
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    print("Got token:", token)
     return auth.verify_token(token, db)
 
  
@@ -139,7 +138,6 @@ async def remove_ingredient(
 
 @router.get("/get-ingredients")
 def get_ingredients(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
-    print(current_user.email)
     ingredients = db.query(models.Ingredient).filter_by(user_id=current_user.user_id).all()
     return {"ingredients": [item.ingredient_name for item in ingredients]}
 
@@ -202,8 +200,6 @@ def remove_favorite(
     user = Depends(get_current_user), 
     db: Session = Depends(get_db),
     ):
-    print(type(payload), payload)
-    print(payload.id)
     recipe = db.query(models.Recipe).filter(
         models.Recipe.recipe_id == payload.id, 
         models.Recipe.user_id == user.user_id).first()
@@ -257,7 +253,6 @@ async def validate_ingredient(query: str):
     if query_lower not in suggestions and query_lower in current_ingredients:
         # Ingredient is invalid -> remove from file
         current_ingredients.remove(query_lower)
-        print("Saving suggestions:", current_ingredients)
         save_ingredients(current_ingredients)
 
     # Add new suggestions if not already there

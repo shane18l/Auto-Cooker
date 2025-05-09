@@ -6,7 +6,7 @@ class User(Base):
     __tablename__ = 'users'
     user_id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
-    password_hash = Column(String)
+    password_hash = Column(String) 
     created_at = Column(TIMESTAMP)
 
 class Ingredient(Base): 
