@@ -17,7 +17,7 @@ function IngredientsPage() {
       if (!token) return;
 
       try {
-        const response = await fetch('http://localhost:8000/get-ingredients', {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/get-ingredients`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -41,7 +41,7 @@ function IngredientsPage() {
     const invalid = [];
 
     for (const ing of ingredients) {
-      const res = await fetch(`http://localhost:8000/validateIngredient?query=${encodeURIComponent(ing)}`);
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/validateIngredient?query=${encodeURIComponent(ing)}`);
       const data = await res.json();
 
       if (!data.valid) {
@@ -68,7 +68,7 @@ function IngredientsPage() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch('http://localhost:8000/remove-ingredient', {
+        await fetch(`${import.meta.env.VITE_BASE_URL}/remove-ingredient`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ function IngredientsPage() {
       if (token) { 
         try {
           // STEP 1: Save ingredients to the database
-          await fetch('http://localhost:8000/save-ingredients', {
+          await fetch(`${import.meta.env.VITE_BASE_URL}/save-ingredients`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ function IngredientsPage() {
           console.error("Error saving ingredients:", err);
         }
       }
-      const response = await fetch('http://localhost:8000/generate-recipes', {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/generate-recipes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

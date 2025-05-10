@@ -9,7 +9,7 @@ function HomePage() {
     const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:8000/featured")
+        fetch(`${import.meta.env.VITE_BASE_URL}/featured`)
             .then((res) => res.json())
             .then((data) => setRecipes(data))
             .catch((err) => console.error("Error fetching recipes:", err));

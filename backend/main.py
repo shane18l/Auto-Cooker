@@ -26,7 +26,7 @@ app = FastAPI()  # Create a FastAPI "app" instance (your server)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow your React app
+    allow_origins=["https://recipes-for-days.netlify.app/"],  # Allow your React app
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

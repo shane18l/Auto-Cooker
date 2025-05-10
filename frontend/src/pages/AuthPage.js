@@ -15,7 +15,7 @@ function AuthPage() {
     const endpoint = isRegistering ? 'register' : 'login';
 
     try {
-      const response = await fetch(`http://localhost:8000/${endpoint}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
