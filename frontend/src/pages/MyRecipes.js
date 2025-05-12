@@ -18,7 +18,7 @@ const MyRecipes = () => {
           return;
         }
 
-        const response = await fetch('http://127.0.0.1:8000/get-favorites', {
+        const response = await fetch(`${API_URL}/get-favorites`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

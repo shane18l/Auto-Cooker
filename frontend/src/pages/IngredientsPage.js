@@ -107,7 +107,7 @@ function IngredientsPage() {
           console.error("Error saving ingredients:", err);
         }
       }
-      const response = await fetch(`${API_URL}/generate-recipes`, {
+      const response = await fetch(`/generate-recipes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ function IngredientsPage() {
               onChange={(e) => {
                 const value = e.target.value;
                 setInput(value);
-                if (value.length > 0) {
+                if (value.length > ${API_URL}0) {
                   const matches = validIngredients.filter(ingredient =>
                     ingredient.toLowerCase().includes(value.toLowerCase())
                   ).slice(0, 5); // Limit to 10 suggestions
