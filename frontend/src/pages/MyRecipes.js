@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RecipePage.css'; // Reuse the same CSS for consistency
 import Navbar from './Navbar';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const MyRecipes = () => {
   const [favorites, setFavorites] = useState([]);
@@ -37,7 +38,7 @@ const MyRecipes = () => {
   const handleUnfavorite = async (recipeId) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/remove-favorite`, {
+      const response = await fetch(`${API_URL}/remove-favorite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

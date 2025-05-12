@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './IngredientsPage.css'; // You can create a new CSS file
 import Navbar from './Navbar';
 import validIngredients from '../ingredients.json';
+const API_URL = process.env.REACT_APP_API_URL;
 
 function IngredientsPage() {
   const [input, setInput] = useState('');
@@ -17,7 +18,7 @@ function IngredientsPage() {
       if (!token) return;
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/get-ingredients`, {
+        const response = await fetch(`${API_URL}/get-ingredients`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -41,7 +42,7 @@ function IngredientsPage() {
     const invalid = [];
 
     for (const ing of ingredients) {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/validateIngredient?query=${encodeURIComponent(ing)}`);
+      const res = await fetch(`${API_URL}/validateIngredient?query=${encodeURIComponent(ing)}`);
       const data = await res.json();
 
       if (!data.valid) {
@@ -68,7 +69,7 @@ function IngredientsPage() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch(`${import.meta.env.VITE_BASE_URL}/remove-ingredient`, {
+        await fetch(`${API_URL}/remove-ingredient`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ function IngredientsPage() {
       if (token) { 
         try {
           // STEP 1: Save ingredients to the database
-          await fetch(`${import.meta.env.VITE_BASE_URL}/save-ingredients`, {
+          await fetch(`${API_URL}/save-ingredients`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ function IngredientsPage() {
           console.error("Error saving ingredients:", err);
         }
       }
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/generate-recipes`, {
+      const response = await fetch(`${API_URL}/generate-recipes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

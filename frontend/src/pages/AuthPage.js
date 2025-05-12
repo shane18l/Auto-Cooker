@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AuthPage.css';
 import Navbar from './Navbar';
+const API_URL = process.env.REACT_APP_API_URL;
 
 function AuthPage() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -15,7 +16,7 @@ function AuthPage() {
     const endpoint = isRegistering ? 'register' : 'login';
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/${endpoint}`, {
+      const response = await fetch(`${API_URL}/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import './RecipePage.css';
 import Navbar from './Navbar';
-
+const API_URL = process.env.REACT_APP_API_URL;
 
 function RecipesPage() {
 
@@ -24,7 +24,7 @@ function RecipesPage() {
     }
   
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/add-favorite`, {
+      const response = await fetch(`${API_URL}/add-favorite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

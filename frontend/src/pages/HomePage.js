@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 import Navbar from './Navbar';
+const API_URL = process.env.REACT_APP_API_URL;
 
 function HomePage() {
+    console.log(API_URL);
     const [recipes, setRecipes] = useState([]);
     const [recipeIndex, setRecipeIndex] = useState(0);
     const [suggestion, setSuggestion] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/featured`)
+        fetch(`${API_URL}/featured`)
             .then((res) => res.json())
             .then((data) => setRecipes(data))
             .catch((err) => console.error("Error fetching recipes:", err));
