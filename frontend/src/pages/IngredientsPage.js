@@ -14,7 +14,7 @@ function IngredientsPage() {
 
   useEffect(() => {
     const fetchUserIngredients = async () => {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       if (!token) return;
 
       try {
@@ -66,7 +66,7 @@ function IngredientsPage() {
     const updatedList = ingredientList.filter((_, i) => i !== index);
     setIngredientList(updatedList);
   
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       try {
         await fetch(`${API_URL}/remove-ingredient`, {
@@ -89,7 +89,7 @@ function IngredientsPage() {
       setInvalidIngredients(invalids);
       return;
     }
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (ingredientList.length > 0) {
       if (token) { 
         try {

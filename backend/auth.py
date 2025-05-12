@@ -46,10 +46,8 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
     if not db_user or not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password_hash.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Invalid credentials")
      
-    expire = datetime.utcnow() + timedelta(hours=24)
     token_data = { 
         "sub": str(db_user.user_id), 
-        "exp": expire,
         "email" : user.email,
     }
 

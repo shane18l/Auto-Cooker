@@ -17,7 +17,7 @@ function RecipesPage() {
   );
 
   const handleFavorite = async (recipe) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       setAuthWarning('Please log in to favorite recipes.');
       return;

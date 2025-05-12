@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 
 function Navbar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   let username = '';
   let isValidToken = false;
@@ -17,12 +17,12 @@ function Navbar() {
       isValidToken = true; // Valid token, so update this flag
     } catch (e) {
       console.error("Invalid token:", e.message);
-      localStorage.removeItem('token');  // Remove invalid token
+      sessionStorage.removeItem('token');  // Remove invalid token
     }
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem("token");
     navigate('/auth'); 
   };
 

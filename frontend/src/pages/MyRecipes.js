@@ -12,7 +12,7 @@ const MyRecipes = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (!token) {
           navigate('/auth');
           return;
@@ -36,7 +36,7 @@ const MyRecipes = () => {
   }, [navigate]);
 
   const handleUnfavorite = async (recipeId) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     try {
       const response = await fetch(`${API_URL}/remove-favorite`, {
         method: 'POST',
