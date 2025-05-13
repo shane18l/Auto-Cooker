@@ -6,7 +6,7 @@ AutoCooker is a smart web app that helps you decide what to cook based on the in
 
 ## 🔗 Live Demo
 
-👉 [Try AutoCooker now](https://[https://recipes-for-days.netlify.app])
+👉 [Try AutoCooker now](https://recipes-for-days.netlify.app)
 
 > ⚠️ Make sure to register/login to favorite recipes and save your ingredients!
 
@@ -14,8 +14,8 @@ AutoCooker is a smart web app that helps you decide what to cook based on the in
 
 ## 📸 Screenshot
 
-![AutoCooker Demo](./recipe_preview)  
-![AutoCooker Demo](./fride_preview)  
+![AutoCooker Demo](images/recipe_preview.png)  
+![AutoCooker Demo](images/fride_preview.png)  
 *A preview of how AutoCooker recommends recipes from user-submitted ingredients.*
 
 ---
